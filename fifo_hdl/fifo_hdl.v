@@ -5,7 +5,7 @@ ______________  \/  \/ | \/ | ______________
 --Module Name:  fifo_hdl.v
 --Project Name: FIFO_HDL
 --Data modified: 2016-01-19 17:16:15 +0800
---author:Young-ÎâÃ÷
+--author:Young-ï¿½ï¿½ï¿½ï¿½
 --E-mail: wmy367@Gmail.com
 ****************************************/
 `timescale 1ns/1ps
@@ -32,17 +32,17 @@ module fifo_hdl #(
 	output				empty           ,
 	output				almost_empty
 );
-//--->> RESET BLOCK <<----- 
+//--->> RESET BLOCK <<-----
 wire	rst_n;
 assign	rst_n	= wr_rst_n && rd_rst_n;
 //---<< RESET BLOCK >>-----
 reg 	full_flag,empty_flag;
 reg 	wr_step,rd_step;
 //--->> RING <<------
-localparam	RSIZE	= 	(DEPTH<16)?  4 : 
+localparam	RSIZE	= 	(DEPTH<16)?  4 :
 						(DEPTH<32)?  5 :
       					(DEPTH<64)?  6 :
-						(DEPTH<128)? 7 : 8; 
+						(DEPTH<128)? 7 : 8;
 
 reg	[RSIZE-1:0]	wr_point,rd_point;
 
@@ -136,16 +136,16 @@ always@(posedge wr_clk,negedge rst_n)
 	if(~rst_n)	wr_cnt_reg	<= 5'd0;
 	else if(full_flag)
 				wr_cnt_reg	<= DEPTH;
-	else if(empty_flag)
-				wr_cnt_reg	<= 5'd0;
+	// else if(empty_flag)
+	// 			wr_cnt_reg	<= 5'd0;
 	else if(wr_step^rd_step)
 				wr_cnt_reg	<= (DEPTH+wr_point)-rd_point;
 	else		wr_cnt_reg	<= wr_point - rd_point;
 
 always@(posedge rd_clk,negedge rst_n)
 	if(~rst_n)	rd_cnt_reg	<= 5'd0;
-	else if(full_flag)
-				rd_cnt_reg	<= DEPTH;
+	// else if(full_flag)
+	// 			rd_cnt_reg	<= DEPTH;
 	else if(empty_flag)
 				rd_cnt_reg	<= 5'd0;
 	else if(wr_step^rd_step)
@@ -164,4 +164,3 @@ assign	wr_count	= wr_cnt_reg;
 assign	rd_count	= rd_cnt_reg;
 
 endmodule
-
